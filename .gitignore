@@ -1,5 +1,5 @@
 __pycache__/
-.nenv/
+nenv/
 .env
-.keys.json
-.holiday.html
+keys.json
+holiday.html

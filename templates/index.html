@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Mail</title>
+
+    <style>
+        body {
+            margin: 10px 10%;
+        }
+
+        header {
+            background-color: aquamarine;
+            font-size: xx-large;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            text-align: center;
+            padding: 10px;
+        }
+
+        section {
+            margin: 10px 0px;
+            float: left;
+            width: 70%;
+        }
+
+        .parts {
+            margin: 10px 0;
+        }
+
+        aside {
+            margin: 10px 0px;
+            float: right;
+            width: 30%;
+        }
+
+        aside>* {
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        Automatic Mail Sender
+    </header>
+
+    <section>
+        <div class="parts">
+            <label for="content-file">
+                Upload file containing mail
+            </label>
+
+            <input type="file" name="content-file" id="content-file" accept=".html,.txt">
+
+        </div>
+
+        <div class="parts">
+            <label for="attachment-file">
+                Upload attachment file
+            </label>
+            <input type="file" name="attachment-file" id="attachment-file">
+        </div>
+
+        <button onclick="confirm();">
+            Send mail
+        </button>
+
+    </section>
+
+    <aside>
+        <div>
+            There are a few kinds of delimiters that should use in html mail to replace keywords.<b>Keywords should be
+                column name of excel sheet.</b> <br>
+            The default Jinja delimiters are configured as follows:
+            {# <ul>
+            <li>{% ... %} for Statements</li>
+
+            <li>{{ ... }} for Expressions to print to the template output</li>
+
+            <li>{# ... #} for Comments not included in the template output</li>
+        </ul> #}
+            <b>This site uses Jinja Templating engine.</b><br>
+            Please refer to <a href="https://jinja.palletsprojects.com/en/3.0.x/templates/ ">this</a> for detail
+            documentation.
+        </div>
+    </aside>
+</body>
+
+<script>
+    function confirm(params) {
+
+        let ele = document.querySelector('#attachment-file');
+
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                // Response receive successsfully
+                var response = this.responseText;
+                console.log(response['Emp_Email']);
+
+                var emails = response['Emp_Email'];
+
+
+            }
+            if (this.readyState == 1 | this.readyState == 2) {
+                // //add loading circle
+                // document.getElementById('loading').style.display= 'flex';
+                // document.getElementById('loading').textContent = 'LOADING';
+                // document.getElementById('instaResult').style.display= 'none';
+                console.log('Loading');
+            }
+        }
+
+        xhr.open('POST', 'confirm-recipants', true);
+        xhr.send(document.querySelector('#content-file').files[0]);
+    }
+</script>
+
+</html>
