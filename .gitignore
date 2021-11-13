@@ -1,5 +1,3 @@
-__pycache__/
-nenv/
-.env
-keys.json
-holiday.html
+# created by virtualenv automatically
+Scripts
+Lib
