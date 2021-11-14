@@ -9,22 +9,10 @@ from decouple import config
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import (
     Mail, Attachment, FileContent, FileName,
-    FileType, Disposition, ContentId)
+    FileType, Disposition, ContentId, email)
 from sendgrid import SendGridAPIClient
 
-"""
-scope = ['https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name('keys.json',scope)
-client = gspread.authorize(creds)
 
-sheet = client.open('sampleData').sheet1
-
-data = sheet.get_all_records()
-print(data)
-values_list = sheet.col_values(2)
-print(values_list)
-
-"""
 
 from flask import Flask, render_template, request, Response, render_template_string
 
@@ -37,7 +25,7 @@ app.config['UPLOAD_EXTENSIONS'] = ['jpg', 'png', 'webp', 'jpeg', "pdf"]
 # Home Page
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('main.html')
 
 
 @app.route('/confirm-recipants', methods=['POST'])
@@ -45,7 +33,7 @@ def confirm_recipants():
 
     html = request.data.decode()
 
-    gmail_user = 'ghostpy001@gmail.com'
+    gmail_user = config('gmail_user',os.getenv('gmail_user'))
 
     scope = ['https://www.googleapis.com/auth/drive']
     creds = ServiceAccountCredentials.from_json_keyfile_name(
@@ -57,13 +45,11 @@ def confirm_recipants():
     sheet = client.open('Employee_Data').sheet1
 
     data_as_list_of_dict = sheet.get_all_records()
-    print(data_as_list_of_dict)
-
-    # col_names_as_list = sheet.get_all_values()[0]
-    # print(col_names_as_list)
+    
 
     emails = sheet.col_values(3)[1:]
-    print(emails)
+    
+    output_res={'Result':True}
 
     for (i, j) in zip(data_as_list_of_dict, emails):
 
@@ -91,12 +77,18 @@ def confirm_recipants():
         try:
             sg = SendGridAPIClient(os.getenv('sendmail_key', config('sendmail_key')))
             response = sg.send(message)
+            
+            if(response.status_code == 202):
+                output_res[j] = 'Successful'
+            else:
+                output_res[j] = 'Failed'
 
         except Exception as exp:
-            print(exp.message)
+            output_res['Result'] = False
+            output_res['Desc'] = exp
 
 
-    return jsonify({'res':'DOne','res':str('Doba')})
+    return jsonify(output_res)
 
 
 if(__name__ == '__main__'):

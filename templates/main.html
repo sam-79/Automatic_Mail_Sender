@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automatic Mail Sender</title>
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+  <!-- MDB -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet" />
+
+  <style>
+
+  </style>
+
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+      <!-- Toggle button -->
+      <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+        <span
+          style="font-weight: 700;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+          Automatic Mail Sender
+        </span>
+      </button>
+
+      <!-- Collapsible wrapper -->
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- Navbar brand -->
+        <a class="navbar-brand mt-2 mt-lg-0" href='#'>
+          <i class="fas fa-dice-d6"></i>
+
+        </a>
+        <!-- Left links -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <strong class="nav-link"> Automatic Mail Sender </strong>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Team</a>
+          </li>
+
+        </ul>
+        <!-- Left links -->
+      </div>
+      <!-- Collapsible wrapper -->
+
+  </nav>
+  <!-- Navbar -->
+  <div class="container mt-4">
+
+
+    <div class="alert alert-primary" role="alert">
+      How to use this web mailing tool.
+    </div>
+
+
+    <div class="accordion" id="accordionExample">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+          <button class="accordion-button" type="button" data-mdb-toggle="collapse" data-mdb-target="#collapseOne"
+            aria-expanded="true" aria-controls="collapseOne">
+            Documentation
+          </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+          data-mdb-parent="#accordionExample">
+          <div class="accordion-body">
+            There are a few kinds of delimiters that should use in html mail to replace keywords.<b>Keywords should be
+              column name of excel sheet.</b> <br>
+            The default Jinja delimiters are configured as follows:
+            <ul>
+              <li>{{' {% ... %} '}} for Statements</li>
+
+              <li>{{' {{ ... }} '}} for Expressions to print to the template output</li>
+
+              <li>{{' {# ... #} '}} for Comments not included in the template output</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingTwo">
+          <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse"
+            data-mdb-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            More details
+          </button>
+        </h2>
+        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+          data-mdb-parent="#accordionExample">
+          <div class="accordion-body">
+            <b>This site uses Jinja Templating engine.</b><br>
+            Please refer to <a href="https://jinja.palletsprojects.com/en/3.0.x/templates/ ">this</a> for detail
+            documentation.
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="d-flex align-items-center bg- mb-3" style="height: 100px;">
+      <div class="col">
+        <label for="content-file">
+          <p style="color: rgb(61, 122, 180) ;"> <strong> Upload file containing mail </strong> </p>
+        </label>
+
+        <input type="file" name="content-file" id="content-file" accept=".html,.txt">
+
+      </div>
+
+      <div class="col"></div>
+
+      <div class="col">
+        <label for="attachment-file">
+          <p style="color: rgba(61, 123, 180, 0.600) ;"> <strong> Upload attachment file </strong> </p>
+        </label>
+        <input type="file" name="attachment-file" id="attachment-file" disabled>
+
+      </div>
+      <div class="col"> <button onclick="confirm();" class="btn btn-success">SEND MAIL</button></div>
+
+
+    </div>
+    <div id="loading" style="    display: none;
+    justify-content: center;">
+      <img src="{{url_for('static', filename='loading_circle.gif')}}" align="middle" width="50px" />
+      
+    </div>
+    <div id="main-result" style="display: none;">
+      <img src="{{url_for('static', filename='checkCircle.gif')}}" align="middle" width="50px" />
+      <span>
+        <h2 id="res-head">Email Send successfully</h2>
+      </span>
+    </div>
+
+  </div>
+
+
+</body>
+
+<script>
+
+  function displayResult(data) {
+    var ele = document.querySelector('#main-result');
+    ele.style.display = 'block';
+    
+    var table = document.createElement('table');
+    table.className = "table table-striped";
+    table.id = 'result-table'
+    ele.appendChild(table);
+    table = table.createTBody();
+
+    for (let i in data) {
+      table.innerHTML += `
+      <tr><td>${i}</td><td>${data[i]}</td></tr>
+      `;
+    }
+
+
+  }
+
+
+  function confirm() {
+
+   document.querySelector('#result-table').remove();
+
+    let ele = document.querySelector('#attachment-file');
+
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        // Response receive successsfully
+        resp = JSON.parse(this.responseText);
+
+        document.querySelector('#loading').style.display = 'none';
+        
+        displayResult(resp);
+      }
+      if (this.readyState == 1 | this.readyState == 2) {
+        // //add loading circle
+        document.querySelector('#loading').style.display = 'flex';
+      }
+    }
+
+    xhr.open('POST', 'confirm-recipants', true);
+    xhr.send(document.querySelector('#content-file').files[0]);
+  }
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"></script>
+
+</html>
