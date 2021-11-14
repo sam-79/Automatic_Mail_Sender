@@ -1,5 +1,5 @@
 __pycache__/
 nenv/
 .env
-keys.json
+google-credentials.json
 holiday.html

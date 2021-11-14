@@ -120,7 +120,7 @@
           <p style="color: rgb(61, 122, 180) ;"> <strong> Upload file containing mail </strong> </p>
         </label>
 
-        <input type="file" name="content-file" id="content-file" accept=".html,.txt">
+        <input type="file" name="content-file" id="content-file" accept=".html,.txt" required>
 
       </div>
 
@@ -140,7 +140,7 @@
     <div id="loading" style="    display: none;
     justify-content: center;">
       <img src="{{url_for('static', filename='loading_circle.gif')}}" align="middle" width="50px" />
-      
+
     </div>
     <div id="main-result" style="display: none;">
       <img src="{{url_for('static', filename='checkCircle.gif')}}" align="middle" width="50px" />
@@ -159,7 +159,7 @@
   function displayResult(data) {
     var ele = document.querySelector('#main-result');
     ele.style.display = 'block';
-    
+
     var table = document.createElement('table');
     table.className = "table table-striped";
     table.id = 'result-table'
@@ -178,8 +178,11 @@
 
   function confirm() {
 
-   document.querySelector('#result-table').remove();
-
+    try {
+      document.querySelector('#result-table').remove();
+    } catch (error) {
+      console.log(error);
+    }
     let ele = document.querySelector('#attachment-file');
 
     let xhr = new XMLHttpRequest();
@@ -189,7 +192,7 @@
         resp = JSON.parse(this.responseText);
 
         document.querySelector('#loading').style.display = 'none';
-        
+
         displayResult(resp);
       }
       if (this.readyState == 1 | this.readyState == 2) {

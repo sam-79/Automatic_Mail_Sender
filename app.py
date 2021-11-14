@@ -1,5 +1,4 @@
-import base64
-import json
+
 import os
 from flask.json import jsonify
 from flask.wrappers import Request
@@ -37,7 +36,7 @@ def confirm_recipants():
 
     scope = ['https://www.googleapis.com/auth/drive']
     creds = ServiceAccountCredentials.from_json_keyfile_name(
-        'keys.json', scope)
+        'google-credentials.json', scope)
 
     client = gspread.authorize(creds)
 
